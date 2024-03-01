@@ -11,30 +11,30 @@ const config = {
     aliases: ['yt2mp3', 'sing'],
     version: "1.0.3",
     description: "Play music from youtube",
-    usage: '<keyword/url>',
+    usage: '<Từ khoá/Link video>',
     cooldown: 30,
-    credits: "XaviaTeam",
+    credits: "Xavia Team",
     extra: {
-        "MAX_SONGS": 6
+        "MAX_SONGS": 3
     }
 }
 
 const langData = {
     "en_US": {
         "audio.missingArguement": "Please provide keyword or an url",
-        "audio.noResult": "No result found",
+        "audio.noResult": "Không tìm đc,chịu",
         "audio.invalidUrl": "Invalid url",
         "audio.invaldIndex": "Invalid index",
         "audio.tooLarge": "Audio is too large, max size is 48MB",
         "audio.error": "An error occured"
     },
     "vi_VN": {
-        "audio.missingArguement": "Vui lòng cung cấp từ khóa hoặc một url",
-        "audio.noResult": "Không tìm thấy kết quả",
-        "audio.invalidUrl": "Url không hợp lệ",
+        "audio.missingArguement": "Thiếu gì đó thì điền vào đmm🤬",
+        "audio.noResult": "Chịu không tìm đc",
+        "audio.invalidUrl": "Link sex à?",
         "audio.invaldIndex": "Số thứ tự không hợp lệ",
         "audio.tooLarge": "Audio quá lớn, tối đa 48MB",
-        "audio.error": "Đã xảy ra lỗi"
+        "audio.error": "Lỗi rồi 😥(hoặc m dùng ngu)"
     },
     "ar_SY": {
         "audio.missingArguement": "يرجى تقديم كلمة رئيسية أو عنوان الرابط",
