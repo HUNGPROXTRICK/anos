@@ -5,7 +5,7 @@ const config = {
 }
 
 function onCall({ message }) {
-    global.GET(`${global.xva_api.main}/gai`)
+    global.GET(`https://taochap-6377c502025f.herokuapp.com/getlink3`)
         .then(async res => {
             try {
                 let imgStream = await global.getStream(res.data.url);
