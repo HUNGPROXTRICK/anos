@@ -3,88 +3,63 @@ const config = {
     aliases: ["pay"],
     credits: "XaviaTeam",
     description: "Send money to other user",
-    usage: "<mention> <amount>",
+    usage: "mention> <amount>",
+  permissions: [2],
     cooldown: 5,
     extra: {
-        minAmount: 100,
-        fee: 0.05,
-    },
-};
+        minAmount: 1000,
+        fee: 0.05
+    }
+}
 
 const langData = {
-    en_US: {
-        missingMention: "You need to mention someone to send money to them",
-        invalidAmount: "Invalid amount",
-        lowerThanMin: "Minimum amount is {minAmount} XC",
-        notEnoughMoney: "You don't have enough money, you need {amount} XC more",
-        sendSuccessFee: "You have sent {amount} XC to {name} (fee: {fee} XC)",
-        error: "An error occurred, please try again later",
+    "en_US": {
+        "missingMention": "You need to mention someone to send money to them",
+        "invalidAmount": "Invalid amount",
+        "lowerThanMin": "Minimum amount is {minAmount} XC",
+        "notEnoughMoney": "You don't have enough money, you need {amount} XC more",
+        "sendSuccessFee": "You have sent {amount} XC to {name} (fee: {fee} XC)",
+        "error": "An error occurred, please try again later"
     },
-    vi_VN: {
-        missingMention: "Bạn cần phải tag người dùng để gửi tiền cho họ",
-        invalidAmount: "Số tiền không hợp lệ",
-        lowerThanMin: "Số tiền tối thiểu là {minAmount} XC",
-        notEnoughMoney: "Bạn không đủ tiền, bạn cần thêm {amount} XC",
-        sendSuccessFee: "Bạn đã gửi {amount} XC cho {name} (thuế: {fee} XC)",
-        error: "Đã xảy ra lỗi, vui lòng thử lại sau",
-    },
-    ar_SY: {
-        missingMention: "تحتاج إلى ذكر شخص ما لإرسال الأموال إليه",
-        invalidAmount: "مبلغ غير صحيح",
-        lowerThanMin: "الحد الأدنى للمبلغ هو {minAmount} XC",
-        notEnoughMoney: "ليس لديك ما يكفي من المال ، فأنت بحاجة إلى المزيد {amount} XC",
-        sendSuccessFee: "لقد ارسلت {amount} XC الى {name} (مصاريف: {fee} XC)",
-        error: "لقد حدث خطأ، رجاء أعد المحاولة لاحقا",
-    },
-};
+    "vi_VN": {
+        "missingMention": "Bạn cần phải tag người dùng để gửi tiền cho họ",
+        "invalidAmount": "Số tiền không hợp lệ",
+        "lowerThanMin": "Số tiền tối thiểu là {minAmount} XC",
+        "notEnoughMoney": "Bạn không đủ tiền, bạn cần thêm {amount} XC",
+        "sendSuccessFee": "Bạn đã gửi {amount} XC cho {name} thuế 0.05%: {fee} XC",
+        "error": "Đã xảy ra lỗi, vui lòng thử lại sau"
+    }
+}
 
-/** @type {TOnCallCommand} */
-async function onCall({ message, args, balance, extra, getLang }) {
-    const { mentions, reply } = message;
-    const { addCommas } = global.utils;
-    
+async function onCall({ message, args, extra, getLang }) {
+    const { mentions, senderID, reply } = message;
     if (Object.keys(mentions).length == 0) return reply(getLang("missingMention"));
 
     try {
-        const feePercent = balance.make(extra.fee * 100);
         const targetID = Object.keys(mentions)[0];
         const targetNameLength = mentions[targetID].length;
 
-        const amount = balance.makeSafe(
-            args.join(" ").slice(targetNameLength).trim().split(" ").shift()
-        );
+        let amount = args.join(" ").slice(targetNameLength).trim().split(" ").shift();
+        if (isNaN(Number(amount))) return reply(getLang("invalidAmount"));
+        amount = BigInt(amount);
+        if (amount < BigInt(extra.minAmount)) return reply(getLang("lowerThanMin", { minAmount: extra.minAmount }));
 
-        if (amount == null) return reply(getLang("invalidAmount"));
+        const { Users } = global.controllers;
 
-        if (amount < balance.make(extra.minAmount))
-            return reply(getLang("lowerThanMin", { minAmount: extra.minAmount }));
-
-        const senderMoney = balance.get();
-        const fee = (amount * feePercent) / 100n;
+        const senderMoney = await Users.getMoney(senderID);
+        const fee = BigInt(amount * BigInt(parseInt(extra.fee * 100)) / 100n);
         const total = amount + fee;
+        if (senderMoney == null || BigInt(senderMoney) < total) return reply(getLang("notEnoughMoney", { amount: addCommas(total - BigInt(senderMoney)) }));
 
-        if (senderMoney < total)
-            return reply(
-                getLang("notEnoughMoney", {
-                    amount: addCommas(total - senderMoney),
-                })
-            );
+        const targetMoney = await Users.getMoney(targetID);
+        if (targetMoney == null) return reply(getLang("error"));
 
-        const targetBalance = balance.from(targetID);
-        if (targetBalance == null) return reply(getLang("error"));
+        await Users.decreaseMoney(senderID, total);
+        await Users.increaseMoney(targetID, amount);
 
-        balance.sub(total);
-        targetBalance.add(amount);
-
-        return reply(
-            getLang("sendSuccessFee", {
-                amount: addCommas(amount),
-                name: mentions[targetID].replace(/@/g, ""),
-                fee: addCommas(fee),
-            })
-        );
+        return reply(getLang("sendSuccessFee", { amount: addCommas(amount), name: mentions[targetID].replace(/@/g, ""), fee: addCommas(fee) }));
     } catch (e) {
-        console.error(e);
+        console.log(e);
         return reply(getLang("error"));
     }
 }
@@ -92,5 +67,5 @@ async function onCall({ message, args, balance, extra, getLang }) {
 export default {
     config,
     langData,
-    onCall,
-};
+    onCall
+          }

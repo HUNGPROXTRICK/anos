@@ -6,7 +6,9 @@ const config = {
     aliases: ["taixiu", "tx"],
     description: "Play sicbo with bot.",
     usage: "[tai/xiu] [bet] | [big/small] [bet] (default bet is 50)",
+    cooldown: 5,
     credits: "XaviaTeam",
+  permissions: [2],
     extra: {
         minbet: 50
     }
@@ -14,6 +16,7 @@ const config = {
 
 const langData = {
     "en_US": {
+        "sicbo.userNoData": "Your data is not ready yet.",
         "sicbo.invalidChoice": "Invalid choice, available choices:\n{small}\n{big}",
         "sicbo.notEnoughMoney": "Not enough money.",
         "sicbo.minMoney": "Minimum bet is {min} XC.",
@@ -25,6 +28,7 @@ const langData = {
         "any.error": "An error has occurred, try again later."
     },
     "vi_VN": {
+        "sicbo.userNoData": "Dữ liệu của bạn chưa sẵn sàng.",
         "sicbo.invalidChoice": "Lựa chọn không hợp lệ, các lựa chọn có sẵn:\n{small}\n{big}",
         "sicbo.notEnoughMoney": "Không đủ tiền.",
         "sicbo.minMoney": "Cược tối thiểu là {min} XC.",
@@ -36,6 +40,7 @@ const langData = {
         "any.error": "Đã xảy ra lỗi, vui lòng thử lại sau."
     },
     "ar_SY": {
+        "sicbo.userNoData": "البيانات الخاصة بك ليست جاهزة بعد.",
         "sicbo.invalidChoice": "خيار غير صالح ، الخيارات المتاحة:\n{small}\n{big}",
         "sicbo.notEnoughMoney": "مال غير كاف.",
         "sicbo.minMoney": "الحد الأدنى للرهان هو {min} XC.",
@@ -51,26 +56,26 @@ const langData = {
 const small = ["small", "s", "xỉu", "xiu", "x"];
 const big = ["big", "b", "tài", "tai", "t"];
 
-/** @type {TOnCallCommand} */
-async function onCall({ message, args, balance, extra, getLang }) {
+async function onCall({ message, args, extra, getLang }) {
+    const { Users } = global.controllers
     const choice = args[0];
+    const bet = BigInt(args[1] || extra.minbet);
+
+    if (!choice || (!big.includes(choice) && !small.includes(choice)))
+        return message.reply(getLang("sicbo.invalidChoice", { small: small.join(", "), big: big.join(", ") }));
 
     try {
-        const bet = balance.make(args[1] ?? extra.minbet);
-    
-        if (!choice || (!big.includes(choice) && !small.includes(choice)))
-            return message.reply(getLang("sicbo.invalidChoice", { small: small.join(", "), big: big.join(", ") }));
+        const userMoney = await Users.getMoney(message.senderID) || null;
+        if (userMoney === null) return message.reply(getLang("sicbo.userNoData"));
+        if (BigInt(userMoney) < bet) return message.reply(getLang("sicbo.notEnoughMoney"));
+        if (bet < BigInt(extra.minbet)) return message.reply(getLang("sicbo.minMoney", { min: extra.minbet }));
 
-        const userMoney = balance.get();
-        if (userMoney < bet) return message.reply(getLang("sicbo.notEnoughMoney"));
-        if (bet < balance.make(extra.minbet)) return message.reply(getLang("sicbo.minMoney", { min: extra.minbet }));
+        await Users.decreaseMoney(message.senderID, bet);
+        const valueIncreaseIfWin = BigInt(bet) * BigInt(2);
 
-        balance.sub(bet)
-        
-        const valueIncreaseIfWin = bet * 2n;
         const valueToPass = big.includes(choice) ? "tai" : "xiu";
-        const { dices, results } = (await global.utils.GET(`${global.xva_api.main}/taixiu/${valueToPass}`)).data;
-        if (results === "thắng") balance.add(valueIncreaseIfWin);
+        const { dices, results } = (await global.GET(`${global.xva_api.main}/taixiu/${valueToPass}`)).data;
+        if (results === "thắng") await Users.increaseMoney(message.senderID, valueIncreaseIfWin);
 
         const _dices = dices
             .replace("3 nút bằng nhau", getLang("sicbo.result_0"))
@@ -80,7 +85,7 @@ async function onCall({ message, args, balance, extra, getLang }) {
         const _results = results === "thắng" ? "win" : "lose";
         message.reply(getLang(`sicbo.${_results}`, {
             dices: _dices,
-            money: global.utils.addCommas(bet)
+            money: String(bet)
         }));
     } catch (error) {
         console.error(error);
@@ -92,4 +97,4 @@ export default {
     config,
     langData,
     onCall
-}
+  } 
