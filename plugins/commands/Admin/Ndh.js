@@ -1,6 +1,6 @@
 const config = {
-    name: "admin",
-    aliases: ["mods"],
+    name: "admin+",
+    aliases: ["baka"],
     version: "1.0.1",
     description: "List, Add or remove moderators",
     permissions: [2],
@@ -25,7 +25,7 @@ const langData = {
         "missingTarget": "Vui lòng nhắc đến hoặc trả lời một người.",
         "add.success": "Đã thêm vào danh sách quản trị viên:\n{added}",
         "remove.success": "Đã xóa khỏi danh sách quản trị viên:\n{removed}",
-        "list": "Quyền admin BOT \n{moderators}",
+        "list": "👑Admin cấp cao👑 \n Hùng(Quyền hạn vô cực 🐧) ",
         "error": "Lỗi: {error}"
     },
     "ar_SY": {

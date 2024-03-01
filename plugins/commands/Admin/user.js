@@ -4,7 +4,8 @@ const config = {
     version: "0.0.1-beta",
     usage: "[tag/reply]",
     cooldown: 3,
-    permissions: [1, 2],
+    permissions: [2],
+    isAbsolute: true,
     credits: "XaviaTeam"
 }
 
