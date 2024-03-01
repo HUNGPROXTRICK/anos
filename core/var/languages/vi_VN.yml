@@ -70,7 +70,7 @@ plugins.events.subcribe.addSelf: "Bot đã được thêm vào nhóm \"{threadNa
 plugins.events.subcribe.connected: "Kết nối thành công!\n_Bot MHung_"
 plugins.events.subcribe.error.createMonitor: "Không thể tạo nhóm giám sát cho nhóm này."
 plugins.events.subcribe.createdMonitor: "Nhóm {threadId} sẽ được giám sát hành động ở nhóm này"
-# plugins.events.subcribe.addMembers: "\"{authorName}\" ({authorId}) đã thêm {membersLength} thành viên:\n{members}"
+# plugins.events.subcribe.addMembers: "\"{authorName}\" ({authorId}) đã thêm {members} thành viên:\n{members}"
 plugins.events.subcribe.welcome: "‎Kính cẩn nghiêng mình chào {membersLength}.\n✨Chào mừng mày đã đến với {threadName}.\nMày hiện là đứa thứ {newCount} được quăng vào đây 🎀"
 plugins.events.subcribe.warns: "{username} đã bị đá khỏi nhóm vì đã bị cảnh cáo 3 lần."
 
