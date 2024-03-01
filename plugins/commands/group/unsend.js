@@ -60,7 +60,7 @@ async function onCall({ message, args, getLang, data, userPermissions }) {
         const input = args[0]?.toLowerCase();
         const isInputQuery = input == "on" || input == "off";
 
-        const isGroupAdmin = userPermissions.some(e => e == 1);
+        const isGroupAdmin = userPermissions.some(e => e == 2);
 
         if (isGroupAdmin && isInputQuery) {
             if (input == "on") {
