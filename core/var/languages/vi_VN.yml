@@ -78,8 +78,8 @@ plugins.events.unsubcribe.bot.left: "Bot đã rời \"{threadName}\" ({threadId}
 plugins.events.unsubcribe.bot.kicked: "Bot đã bị đá khỏi \"{threadName}\" ({threadId}) bởi \"{authorName}\" ({authorId})."
 # plugins.events.unsubcribe.left: "\"{leftName}\" ({leftId}) đã rời khỏi nhóm."
 # plugins.events.unsubcribe.kicked: "\"{leftName}\" ({leftId}) đã bị đá khỏi nhóm bởi \"{authorName}\" ({authorId})."
-plugins.events.unsubcribe.left: "{leftName} đã tự biến khỏi nhóm🙃."
-plugins.events.unsubcribe.kicked: "{leftName} đã bị đấm bay khỏi nhóm bởi {authorName}."
+plugins.events.unsubcribe.left: "==>THÀNH VIÊN OUT NHÓM<==\n {leftName} đã tự ý rời nhóm,tạm biệt và không hẹn gặp lại."
+plugins.events.unsubcribe.kicked: "{leftName} đã bị đuổi khỏi nhóm bởi {authorName}."
 plugins.events.unsubcribe.antiOut.error: "[ ANTIOUT ] Không thể thêm lại thành viên vào nhóm..."
 plugins.events.unsubcribe.antiOut.success: "[ ANTIOUT ] Đã thêm lại thành viên vào nhóm!"
 
