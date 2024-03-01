@@ -1,18 +1,12 @@
-/**
- *
- * @param {{ event: Extract<Parameters<TOnCallEvents>[0]["event"], { logMessageType: "log:subscribe" }> }} param0
- * @returns
- */
-export default async function subscribe({ event }) {
+import fs from "fs";
+
+export default async function ({ event }) {
     const { api } = global;
     const { threadID, author, logMessageData } = event;
     const { Threads, Users } = global.controllers;
-    const getThread = await Threads.get(threadID);
-
-    if (getThread == null) return;
-
-    const getThreadData = getThread.data;
-    const getThreadInfo = getThread.info;
+    const getThread = (await Threads.get(threadID)) || {};
+    const getThreadData = getThread.data || {};
+    const getThreadInfo = getThread.info || {};
 
     if (Object.keys(getThreadInfo).length > 0) {
         for (const user of logMessageData.addedParticipants) {
@@ -28,12 +22,13 @@ export default async function subscribe({ event }) {
     const authorName = (await Users.getInfo(author))?.name || author;
 
     if (logMessageData.addedParticipants.some((i) => i.userFbId == botID)) {
+        // logger(`${threadID} • ${author} added bot to thread`, 'EVENT');
         if (getThreadInfo.isSubscribed == false)
             getThreadInfo.isSubscribed = true;
         for (const adid of global.config.MODERATORS) {
-            await global.utils.sleep(300);
+            global.sleep(300);
             api.sendMessage(
-                getLang("plugins.events.subscribe.addSelf"),
+                getLang("plugins.events.subcribe.addSelf"),
                 {
                     threadName: getThreadInfo.name || threadID,
                     threadId: threadID,
@@ -50,7 +45,7 @@ export default async function subscribe({ event }) {
             botID
         );
         api.sendMessage(
-            getLang("plugins.events.subscribe.connected", { PREFIX }),
+            getLang("plugins.events.subcribe.connected", { PREFIX }),
             threadID
         );
 
@@ -65,8 +60,8 @@ export default async function subscribe({ event }) {
         //         tag: joinName
         //     })
         // }
-        // let alertMsg = {
-        //     body: getLang("plugins.events.subscribe.addMembers", {
+        // let atlertMsg = {
+        //     body: getLang("plugins.events.subcribe.addMembers", {
         //         authorName: authorName,
         //         authorId: author,
         //         membersLength: joinNameArray.length,
@@ -76,7 +71,7 @@ export default async function subscribe({ event }) {
         // }
         // for (const rUID of getThreadData.notifyChange.registered) {
         //     global.sleep(300);
-        //     api.sendMessage(alertMsg, rUID, (err) => console.error(err));
+        //     api.sendMessage(atlertMsg, rUID, (err) => console.error(err));
         // }
     }
 
@@ -117,7 +112,7 @@ export default async function subscribe({ event }) {
 
                     api.sendMessage(
                         {
-                            body: getLang("plugins.events.subscribe.warns", {
+                            body: getLang("plugins.events.subcribe.warns", {
                                 username,
                             }),
                             mentions: [
@@ -141,10 +136,10 @@ export default async function subscribe({ event }) {
     let oldMembersLength = getThreadInfo.members.length - joinNameArray.length;
     let newCount = joinNameArray.map((_, i) => i + oldMembersLength + 1);
 
-    let alertMsg = {
+    let atlertMsg = {
         body: (getThreadData?.joinMessage
             ? getThreadData.joinMessage
-            : getLang("plugins.events.subscribe.welcome")
+            : getLang("plugins.events.subcribe.welcome")
         )
             .replace(/\{members}/g, joinNameArray.join(", "))
             .replace(/\{newCount}/g, newCount.join(", "))
@@ -152,37 +147,66 @@ export default async function subscribe({ event }) {
         mentions,
     };
 
-    const gifPath = `${global.mainPath}/plugins/events/subscribeGifs/${threadID}.gif`;
+    // const gifPath = `${global.mainPath}/plugins/events/subcribeGifs/${threadID}.gif`;
 
-    if (logMessageData.addedParticipants.length == 1 && warns.length == 0) {
-        const profilePicUrl = global.utils.getAvatarURL(
-            logMessageData.addedParticipants[0].userFbId
-        );
+    // if (logMessageData.addedParticipants.length == 1 && warns.length == 0) {
+    //     const profilePicUrl = global.getAvatarURL(
+    //         logMessageData.addedParticipants[0].userFbId
+    //     );
 
-        const username = logMessageData.addedParticipants[0].fullName;
-        const welcomeCard = await global.utils
-            .getStream(
-                `${
-                    global.xva_api.popcat
-                }/welcomecard?background=https://cdn.discordapp.com/attachments/850808002545319957/859359637106065408/bg.png&text1=${encodeURIComponent(
-                    username
-                )}&text2=Welcome+To+${encodeURIComponent(
-                    getThreadInfo.name || threadID
-                )}&text3=Member+${newCount[0]}&avatar=${encodeURIComponent(
-                    profilePicUrl
-                )}`
-            )
-            .catch(() => null);
+    //     await new Promise((resolve) => {
+    //         global.request(
+    //             `${global.xva_api.main}/imgbb`,
+    //             {
+    //                 method: "POST",
+    //                 data: {
+    //                     url: profilePicUrl,
+    //                 },
+    //             },
+    //             async (error, res, data) => {
+    //                 if (error) {
+    //                     console.error(error);
+    //                     return resolve();
+    //                 }
 
-        if (welcomeCard) alertMsg.attachment = [welcomeCard];
-    }
+    //                 const username =
+    //                     logMessageData.addedParticipants[0].fullName;
+    //                 const welcomeCard = await global.getStream(
+    //                     `${
+    //                         global.xva_api.popcat
+    //                     }/welcomecard?background=https://cdn.discordapp.com/attachments/850808002545319957/859359637106065408/bg.png&text1=${encodeURIComponent(
+    //                         username
+    //                     )}&text2=Welcome+To+${encodeURIComponent(
+    //                         getThreadInfo.name || threadID
+    //                     )}&text3=Member+${newCount[0]}&avatar=${res.data.url}`
+    //                 );
 
-    if (!alertMsg.attachment && global.isExists(gifPath)) {
-        alertMsg.attachment = [await global.getStream(gifPath)];
+    //                 atlertMsg.attachment = [welcomeCard];
+
+    //                 return resolve();
+    //             }
+    //         );
+    //     });
+    // } else if (global.isExists(gifPath)) {
+    //     atlertMsg.attachment = [await global.getStream(gifPath)];
+    // }
+
+    const joinMediaPath = `${global.assetsPath}/subscribe`;
+    const allFiles = fs
+        .readdirSync(joinMediaPath)
+        .filter((i) => i.endsWith(".mp4"));
+
+    if (allFiles.length > 0) {
+        const randomFile =
+            allFiles[Math.floor(Math.random() * allFiles.length)];
+
+        atlertMsg.attachment = [
+            fs.createReadStream(`${joinMediaPath}/${randomFile}`),
+        ];
     }
 
     if (joinNameArray.length > 0)
-        api.sendMessage(alertMsg, threadID, (err) =>
+        api.sendMessage(atlertMsg, threadID, (err) =>
             err ? console.error(err) : null
         );
 
