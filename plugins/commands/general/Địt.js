@@ -1,12 +1,12 @@
 export const config = {
-    name: "địt",
+    name: "vdgai",
     version: "0.0.1-xaviabot-port-refactor",
     credits: "đã xoá",
-    description: "địt ai đó",
-    usage: "[Chjch ai đó]",
+    description: "gái xinh 🥵",
+    usage: "[cc]",
     cooldown: 5,
-    permissions: [2],
-    isAbsolute: true,
+    permissions: [0],
+    isAbsolute: false,
 };
 
 export async function onCall({ message }) {
@@ -14,7 +14,7 @@ export async function onCall({ message }) {
 
     if (!mentions || !Object.keys(mentions)[0]) return reply("Please tag someone");
 
-    return GET('https://taochap-6377c502025f.herokuapp.com/getlink4')
+    return GET('https://taochap-6377c502025f.herokuapp.com/getlink3')
         .then(async res => {
             let mention = Object.keys(mentions)[0],
                 tag = mentions[mention].replace("@", "");
