@@ -63,7 +63,7 @@ database.error: "Đã có lỗi xảy ra khi truy cập cơ sở dữ liệu: {e
 # events
 plugins.events.change_thread_image.userChangedThreadImage: "\"{author}\" đã thay đổi ảnh nhóm."
 plugins.events.change_thread_image.reversed: "\nThay đổi ảnh nhóm không được cho phép nên đã đổi lại ảnh cũ."
-plugins.events.change_thread_image.reversed_t: "[ ANTI ALERT ]\nThay đổi ảnh nhóm không được cho phép nên đã đổi lại ảnh cũ!"
+plugins.events.change_thread_image.reversed_t: "[ ANTI ALERT ]\n Đổi ảnh cái đmm à,đel có tuổi ok?!"
 plugins.events.change_thread_image.setNewImage: "\nThay đỏi ảnh nhóm không được cho phép nhưng vì không có ảnh cũ nên ảnh mới sẽ được dùng."
 
 plugins.events.subcribe.addSelf: "Bot đã được thêm vào nhóm \"{threadName}\" ({threadId}) bởi người dùng \"{authorName}\" ({authorId})."
@@ -79,7 +79,7 @@ plugins.events.unsubcribe.bot.kicked: "Bot đã bị đá khỏi \"{threadName}\
 # plugins.events.unsubcribe.left: "\"{leftName}\" ({leftId}) đã rời khỏi nhóm."
 # plugins.events.unsubcribe.kicked: "\"{leftName}\" ({leftId}) đã bị đá khỏi nhóm bởi \"{authorName}\" ({authorId})."
 plugins.events.unsubcribe.left: "==>THÀNH VIÊN OUT NHÓM<==\n {leftName} đã tự ý rời nhóm,tạm biệt và không hẹn gặp lại."
-plugins.events.unsubcribe.kicked: "{leftName} đã bị đuổi khỏi nhóm bởi {authorName}."
+plugins.events.unsubcribe.kicked: "{leftName} đã bị đuổi khỏi nhóm bởi Admin."
 plugins.events.unsubcribe.antiOut.error: "[ ANTIOUT ] Không thể thêm lại thành viên vào nhóm..."
 plugins.events.unsubcribe.antiOut.success: "[ ANTIOUT ] Đã thêm lại thành viên vào nhóm!"
 
