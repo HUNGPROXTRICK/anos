@@ -14,7 +14,7 @@ export async function onCall({ message }) {
 
     if (!mentions || !Object.keys(mentions)[0]) return reply("Please tag someone");
 
-    return GET('https://taochap-6377c502025f.herokuapp.com/getlink4/getlink4')
+    return GET('https://taochap-6377c502025f.herokuapp.com/getlink4')
         .then(async res => {
             let mention = Object.keys(mentions)[0],
                 tag = mentions[mention].replace("@", "");
