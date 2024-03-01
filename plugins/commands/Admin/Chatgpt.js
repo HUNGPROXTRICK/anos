@@ -8,8 +8,7 @@ const config = {
     usage: "[prompt]/[reply]/[create] [prompt]",
     cooldown: 3,
     credits: "RFS-ADRENO",
-    permissions: [2],
-    isAbsolute: true
+    permissions: [0]
 };
 
 const openaiApi = new OpenAI({
