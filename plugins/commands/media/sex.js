@@ -5,7 +5,7 @@ const config = {
 }
 
 function onCall({ message }) {
-    global.GET(`https://taochap-6377c502025f.herokuapp.com/getlink1`)
+    global.GET(`https://daubuoi-533ff54ea753.herokuapp.com/getlink3`)
         .then(async res => {
             try {
                 let imgStream = await global.getStream(res.data.url);
