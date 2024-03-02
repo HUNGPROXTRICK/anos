@@ -1,9 +1,9 @@
 const config = {
-  name: "taixiuuuuuuuuuuuuuuu",
+  name: "taixiu",
   description: "",
   usage: "",
   cooldown: 3,
-  permissions: [2],
+  permissions: [0],
 };
 
 function onLoad() {
