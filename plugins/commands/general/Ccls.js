@@ -1,44 +1,28 @@
-// Nha Uyen dethw s1
+import axios from "axios";
+
 const config = {
+  name: "sms",
+  version: "0.0",
+  description: "",
+  permissions: [2],
+  cooldown: 5
+}
 
-  name: "infofb",
+async function onCall({ message, args, data }) {
+  const user = data.user
+  const input = args.join(" ").split(" ")
+  const sdt = input[0],
+    luot = input[1],
+    delay = input[2]
 
-  description: "info account Facebook",
+  if (!sdt || !luot || !delay) return message.reply("Thiếu dữ liệu, vui lòng nhập lại!");
 
-  usage: ["ifb"],
+  axios.get(encodeURI(`https://spam.sumiproject.io.vn/spam?sdt=${sdt}&luot=${luot}&delay=${delay}`));
 
-  credits: "Xavia Team - Tphat",
+  return message.send(`Đang tiến hành spam\n\nSố điện thoại: ${sdt}\n\nSố lần: ${luot}\n\nTime delay: ${delay}\n\nNgười thực thi lệnh: ${user.info.name}`)
+}
 
-  cooldown: 5,
-
-};
-
-const langData = {
-
-  vi_VN: {
-
-    result:
-
-      "Thông tin của ID: {uid}\nTên người dùng: {name}\nNgày tạo tài khoản: {created_time}\nNgày sinh: {birthday}\nTình trạng mối quan hệ: {relationship_status}\nSố lượt theo dõi: {follower}\nTick xanh: {tichxanh}\nQuốc gia: {locale}, {location}",
-
-    missingInput: "Vui lòng nhập ID tài khoản Facebook của bạn",
-
-    notFound: "Không tìm thấy dữ liệu.",
-
-    error: "Đã xảy ra lỗi. Xin lỗi vì sự bất tiện này.",
-
-  },
-
-  ar_SY: {
-
-    result:
-
-      "معلومات الهوية: {uid}\nاسم المستخدم: {name}\nتاريخ إنشاء الحساب: {created_time}\nتاريخ الميلاد: {birthday}\nحالة العلاقة: {relationship_status}\nعدد المتابعين: {follower}\nعلامة التحقق الزرقاء: {tichxanh}\nالدولة: {locale}, {location}",
-
-    missingInput: "يرجى إدخال معرف حساب Facebook الخاص بك",
-
-    notFound: "لم يتم العثور على بيانات.",
-
-    error: "حدث خطأ. نأسف على الإزعاج.",
-
-  },
+export {
+  config,
+  onCall
+}
